@@ -7,6 +7,9 @@ from things.Cell import Cell
 import sys
 
 class Window(QMainWindow):
+    '''
+        Recursive BAckTacker
+    '''
     def __init__(self):
         super().__init__()
         self.title = "PyQt5 Drawing Rectangle"
@@ -22,6 +25,8 @@ class Window(QMainWindow):
         for i in range(self.rows):
             for j in range(self.columns):
                 self.grid.append(Cell(i,j))
+        self.current = self.grid[0]
+        self.current.visited = True
 
     def InitWindow(self):
         self.setWindowIcon(QtGui.QIcon("icon.png"))
@@ -35,25 +40,9 @@ class Window(QMainWindow):
         painter.setPen(QPen(Qt.black, 1, Qt.SolidLine))
         #(int x, int y, int width, int height)
         for cell in self.grid:
-            x = cell.row * self.w
-            y = cell.col * self.w
             #painter.drawRect(cell.row * self.w, cell.col * self.w, self.w, self.w)
+            cell.show(painter, self.w)
 
-            #top
-            if cell.walls["top"]:
-                painter.drawLine(x         , y         , x + self.w, y)
-
-            #right
-            if cell.walls["right"]:
-                painter.drawLine(x + self.w, y         , x + self.w, y + self.w)
-
-            #bottom
-            if cell.walls["bottom"]:
-                painter.drawLine(x + self.w, y + self.w, x         , y + self.w)
-
-            #left
-            if cell.walls["left"]:
-                painter.drawLine(x         , y + self.w, x         , y)
 
 
 App = QApplication(sys.argv)
