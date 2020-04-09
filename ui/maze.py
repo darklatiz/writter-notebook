@@ -29,8 +29,6 @@ class Window(QMainWindow):
             for j in range(self.columns):
                 row.append(Cell(i,j))
             self.grid.append(row)
-        self.current = self.grid[0][0]
-        self.current.visited = True
         self.myStaxk.append(self.grid[0][0])
 
     def InitWindow(self):
