@@ -33,8 +33,7 @@ class MainWindow(QMainWindow):
             for j in range(self.columns):
                 row.append(Cell(i,j))
             self.grid.append(row)
-        self.myStaxk.append(self.grid[0][0])
-        self.grid[0][0].visited = True
+        self.myStaxk.append(self.grid[10][10])
 
         self.func = (None, None)
         self.mModified = True
@@ -105,11 +104,8 @@ class MainWindow(QMainWindow):
             self.current = c_cell;
             c_cell.visited = True
             c_cell.draw_mark(painter, self.w)
-            unvisited_cell = c_cell.check_neighbours(self.grid)
-            if unvisited_cell is not None:
-                print(type(unvisited_cell))
-                print("({0}, {1})".format(unvisited_cell.col, unvisited_cell.row))
-                self.myStaxk.append(unvisited_cell)
+            c_cell.check_neighbours(self.grid, self.myStaxk)
+            print("Stack: {0}".format(self.myStaxk))
 
     def save_as(self):
         print("to be implemented")
