@@ -51,47 +51,52 @@ class Cell:
             painter.drawRect(self.row * w, self.col * w, w, w)
 
     def check_neighbours(self, the_grid, the_stack):
-        ramdom_if = random.randrange(4)
-
-        if ramdom_if == 0:
-            print("Random if 0")
-            cell_top    = self.get_cell_from_grid(the_grid, self.row, self.col - 1)
-            if cell_top is not None and not cell_top.visited:
-                the_stack.append(cell_top)
-        elif ramdom_if == 1:
-            print("Random if: 1")
-            cell_right  = self.get_cell_from_grid(the_grid,self.row + 1, self.col)
-            if cell_right is not None and not cell_right.visited:
-                the_stack.append(cell_right)
-        elif ramdom_if == 2:
-            print("Random if: {0}".format(ramdom_if))
-            cell_bottom = self.get_cell_from_grid(the_grid, self.row, self.col + 1)
-            if cell_bottom is not None and not cell_bottom.visited:
-                the_stack.append(cell_bottom)
-        elif ramdom_if == 3:
-            print("Random if: {0}".format(ramdom_if))
-            cell_left   = self.get_cell_from_grid(the_grid, self.row - 1, self.col)
-            if cell_left is not None and not cell_left.visited:
-                the_stack.append(cell_left)
-        '''
-        if len(self.neighbours) > 0:
-            print("Vecinos: {0}".format(self.neighbours))
-            index = random.randrange(4)
-            print("Vecino en index {0}".format(index))
-            try:
-                return self.neighbours[index]
-            except IndexError as e:
-                return None
+        neighbours = self.get_neighbours_from_grid(the_grid)
+        if neighbours is not None and len(neighbours) > 0:
+            for i in range(len(neighbours)):
+                random_if = random.randrange(len(neighbours))
+                the_stack.append(neighbours[random_if])
         else:
-            return None
-        '''
+            print("Neighbours not found....")
+            pass
 
-    def get_cell_from_grid(self, the_grid, row, col):
+    def get_neighbours_from_grid(self, the_grid):
+        lst = []
         try:
-            return the_grid[row][col]
+            #top
+            c = the_grid[self.row][self.col -1]
+            if not c.visited:
+                lst.append(c)
         except IndexError as indexerr:
-            print("Error en cell({0},{1})".format(row, col))
-            return None
+            print("Neighbour not found cell({0},{1})".format(self.row, self.col -1))
+
+
+        try:
+            #right
+            c = the_grid[self.row + 1][self.col]
+            if not c.visited:
+                lst.append(c)
+        except IndexError as indexerr:
+            print("Neighbour not found cell({0},{1})".format(self.row + 1, self.col))
+
+        try:
+            #bottom
+            c = the_grid[self.row][self.col + 1]
+            if not c.visited:
+                lst.append(c)
+        except IndexError as indexerr:
+            print("Neighbour not found cell({0},{1})".format(self.row, self.col + 1))
+
+        try:
+            #left
+            c = the_grid[self.row - 1][self.col]
+            if not c.visited:
+                lst.append(c)
+        except IndexError as indexerr:
+            print("Neighbour not found cell({0},{1})".format(self.row - 1, self.col))
+
+        return lst
+
 
     def __str__(self):
         return "Cell({0},{1})".format(self.row,self.col)

@@ -12,7 +12,7 @@ class MainWindow(QMainWindow):
     '''
         Recursive BAckTacker
     '''
-    def __init__(self, width=800, height=800, top=150, left=150):
+    def __init__(self, width=600, height=600, top=150, left=150):
         QMainWindow.__init__(self)
         self.title = "PyQt5 Drawing Rectangle"
         self.top = top
@@ -25,6 +25,7 @@ class MainWindow(QMainWindow):
         self.rows = math.floor(self.width/self.w)
         self.columns = math.floor(self.width/self.w)
         self.myStaxk = deque()
+        self.path = []
         self.current = None
         self.func = (None, None)
         self.grid_painted = False
@@ -33,7 +34,7 @@ class MainWindow(QMainWindow):
             for j in range(self.columns):
                 row.append(Cell(i,j))
             self.grid.append(row)
-        self.myStaxk.append(self.grid[10][10])
+        self.myStaxk.append(self.grid[5][5])
 
         self.func = (None, None)
         self.mModified = True
@@ -89,6 +90,7 @@ class MainWindow(QMainWindow):
                     cell.init_grid(painter, self.w)
             #self.grid_painted = True
 
+        self.draw_path(painter)
         self.sent_painter(painter)
 
     def sent_painter(self, qp):
@@ -103,9 +105,16 @@ class MainWindow(QMainWindow):
             c_cell = self.myStaxk.pop()
             self.current = c_cell;
             c_cell.visited = True
+            self.path.append(c_cell)
+            self.draw_path(painter)
             c_cell.draw_mark(painter, self.w)
             c_cell.check_neighbours(self.grid, self.myStaxk)
             print("Stack: {0}".format(self.myStaxk))
+
+    def draw_path(self, painter):
+        for cell in self.path:
+            painter.setBrush(QBrush(Qt.darkGreen, Qt.SolidPattern))
+            painter.drawRect(cell.row * self.w, cell.col * self.w, self.w, self.w)
 
     def save_as(self):
         print("to be implemented")
