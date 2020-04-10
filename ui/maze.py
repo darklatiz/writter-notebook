@@ -6,6 +6,8 @@ from PyQt5.QtCore import Qt, QPoint
 import math
 from things.Cell import Cell
 from collections import  deque
+import random
+import time
 import sys
 
 class MainWindow(QMainWindow):
@@ -101,15 +103,37 @@ class MainWindow(QMainWindow):
 
     def create_maze(self, painter):
         #while len(self.myStaxk) > 0:
-        for i in range(1):
-            c_cell = self.myStaxk.pop()
-            self.current = c_cell;
-            c_cell.visited = True
-            self.path.append(c_cell)
-            self.draw_path(painter)
-            c_cell.draw_mark(painter, self.w)
-            c_cell.check_neighbours(self.grid, self.myStaxk)
-            print("Stack: {0}".format(self.myStaxk))
+        for i in range(25):
+            if len(self.myStaxk) > 0:
+                c_cell = self.myStaxk.pop()
+                self.current = c_cell;
+                c_cell.visited = True
+                self.path.append(c_cell)
+                self.draw_path(painter)
+                c_cell.draw_mark(painter, self.w)
+                c_cell.check_neighbours(self.grid)
+                not_visited_cells = [visited_cell for visited_cell in c_cell.neighbours if not visited_cell.visited]
+
+                if len(not_visited_cells) > 0:
+                    self.myStaxk.append(self.current)
+                    #verify the neighbours that have not been visited
+                    len_n = len(not_visited_cells)
+                    if len_n > 1:
+                        random_index = random.randrange(0, len_n - 1)
+                    else:
+                        random_index = 0
+
+                    n_cell = not_visited_cells[random_index]
+                    n_cell.visited = True
+                    self.myStaxk.append(n_cell)
+
+                ####remove walls
+
+                print("Stack: {0}".format(self.myStaxk))
+            else:
+                print("Finisehd.........")
+
+
 
     def draw_path(self, painter):
         for cell in self.path:

@@ -11,6 +11,7 @@ class Cell:
         self.row = row
         self.col = col
         self.visited = False
+        self.loaded_neighbours = False
         self.neighbours = []
         self.walls = {
             "left": None,
@@ -50,23 +51,18 @@ class Cell:
             painter.setBrush(QBrush(Qt.darkMagenta, Qt.SolidPattern))
             painter.drawRect(self.row * w, self.col * w, w, w)
 
-    def check_neighbours(self, the_grid, the_stack):
-        neighbours = self.get_neighbours_from_grid(the_grid)
-        if neighbours is not None and len(neighbours) > 0:
-            for i in range(len(neighbours)):
-                random_if = random.randrange(len(neighbours))
-                the_stack.append(neighbours[random_if])
+    def check_neighbours(self, the_grid):
+        if not self.loaded_neighbours:
+            self.get_neighbours_from_grid(the_grid)
         else:
-            print("Neighbours not found....")
-            pass
+            print("Neighbours have been loaded")
 
     def get_neighbours_from_grid(self, the_grid):
-        lst = []
         try:
             #top
             c = the_grid[self.row][self.col -1]
             if not c.visited:
-                lst.append(c)
+                self.neighbours.append(c)
         except IndexError as indexerr:
             print("Neighbour not found cell({0},{1})".format(self.row, self.col -1))
 
@@ -75,7 +71,7 @@ class Cell:
             #right
             c = the_grid[self.row + 1][self.col]
             if not c.visited:
-                lst.append(c)
+                self.neighbours.append(c)
         except IndexError as indexerr:
             print("Neighbour not found cell({0},{1})".format(self.row + 1, self.col))
 
@@ -83,7 +79,7 @@ class Cell:
             #bottom
             c = the_grid[self.row][self.col + 1]
             if not c.visited:
-                lst.append(c)
+                self.neighbours.append(c)
         except IndexError as indexerr:
             print("Neighbour not found cell({0},{1})".format(self.row, self.col + 1))
 
@@ -91,11 +87,10 @@ class Cell:
             #left
             c = the_grid[self.row - 1][self.col]
             if not c.visited:
-                lst.append(c)
+                self.neighbours.append(c)
         except IndexError as indexerr:
             print("Neighbour not found cell({0},{1})".format(self.row - 1, self.col))
 
-        return lst
 
 
     def __str__(self):
