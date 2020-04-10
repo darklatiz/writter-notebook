@@ -2,7 +2,7 @@ import PyQt5
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, qApp, QAction, QMessageBox
 from PyQt5.QtGui import QPainter, QBrush, QPen, QIcon, QKeySequence
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPoint
 import math
 from things.Cell import Cell
 from collections import  deque
@@ -26,7 +26,7 @@ class MainWindow(QMainWindow):
         self.columns = math.floor(self.width/self.w)
         self.myStaxk = deque()
         self.current = None
-        self.painter = None
+        self.grid_painted = False
         for i in range(self.rows):
             row = []
             for j in range(self.columns):
@@ -34,6 +34,9 @@ class MainWindow(QMainWindow):
             self.grid.append(row)
         self.myStaxk.append(self.grid[0][0])
         self.grid[0][0].visited = True
+
+        self.func = (None, None)
+        self.mModified = True
 
         self.create_actions()
         self.create_tool_bars()
@@ -47,7 +50,7 @@ class MainWindow(QMainWindow):
     def create_actions(self):
         root = PyQt5.QtCore.QFileInfo(__file__).absolutePath()
 
-        self.new_maze = QAction(QIcon(root + '/images/new.png'), "&New", self,
+        self.new_maze = QAction(QIcon(root + '/images/new.png'), "&Create Maze", self,
                 shortcut=QKeySequence.New, statusTip="Start Maze Creation",
                 triggered=self.create_maze)
 
@@ -75,17 +78,23 @@ class MainWindow(QMainWindow):
     def paintEvent(self, e):
         painter = QPainter(self)
         painter.setPen(QPen(Qt.black, 1, Qt.SolidLine))
-        for cell_list in self.grid:
-            for cell in cell_list:
-                cell.init_grid(painter, self.w)
+
+        if not self.grid_painted:
+            for cell_list in self.grid:
+                for cell in cell_list:
+                    cell.init_grid(painter, self.w)
+            self.grid_painted = True
 
 
     def create_maze(self):
+        qp = QtGui.QPainter()
         while len(self.myStaxk) > 0:
             c_cell = self.myStaxk.pop()
             self.current = c_cell;
             c_cell.visited = True
-            c_cell.draw_mark(self.painter, self.w)
+            c_cell.draw_mark(qp, self.w)
+
+            self.update()
             unvisited_cell = c_cell.check_neighbours(self.grid)
             self.myStaxk.append(unvisited_cell)
 
@@ -95,6 +104,23 @@ class MainWindow(QMainWindow):
     def about(self):
         QMessageBox.about(self, "About Application",
                 "The <b>Application</b> Maze Creation.")
+
+    def keyPressEvent(self, event):
+        gey = event.key()
+        self.func = (None, None)
+        if gey == Qt.Key_M:
+            print("Key 'm' pressed!")
+        elif gey == Qt.Key_Right:
+            print("Right key pressed!, call drawFundBlock()")
+            self.func = (self.drawFundBlock, {})
+            self.mModified = True
+            self.update()
+            self.nextRegion()
+        elif gey == Qt.Key_5:
+            print("#5 pressed, call drawNumber()")
+            self.func = (self.drawNumber, {"notePoint": QPoint(100, 100)})
+            self.mModified = True
+            self.update()
 
 
 if __name__ == '__main__':
