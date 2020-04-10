@@ -26,6 +26,7 @@ class MainWindow(QMainWindow):
         self.columns = math.floor(self.width/self.w)
         self.myStaxk = deque()
         self.current = None
+        self.func = (None, None)
         self.grid_painted = False
         for i in range(self.rows):
             row = []
@@ -76,6 +77,10 @@ class MainWindow(QMainWindow):
         self.about_bar.addAction(self.about_action)
 
     def paintEvent(self, e):
+        print("paint EVEnT >>>>>>>>>>>>")
+        if self.mModified:
+            self.mModified = False
+
         painter = QPainter(self)
         painter.setPen(QPen(Qt.black, 1, Qt.SolidLine))
 
@@ -83,20 +88,28 @@ class MainWindow(QMainWindow):
             for cell_list in self.grid:
                 for cell in cell_list:
                     cell.init_grid(painter, self.w)
-            self.grid_painted = True
+            #self.grid_painted = True
 
+        self.sent_painter(painter)
 
-    def create_maze(self):
-        qp = QtGui.QPainter()
-        while len(self.myStaxk) > 0:
+    def sent_painter(self, qp):
+        func, kwargs = self.func
+        if func is not None:
+            kwargs["painter"] = qp
+            func(**kwargs)
+
+    def create_maze(self, painter):
+        #while len(self.myStaxk) > 0:
+        for i in range(1):
             c_cell = self.myStaxk.pop()
             self.current = c_cell;
             c_cell.visited = True
-            c_cell.draw_mark(qp, self.w)
-
-            self.update()
+            c_cell.draw_mark(painter, self.w)
             unvisited_cell = c_cell.check_neighbours(self.grid)
-            self.myStaxk.append(unvisited_cell)
+            if unvisited_cell is not None:
+                print(type(unvisited_cell))
+                print("({0}, {1})".format(unvisited_cell.col, unvisited_cell.row))
+                self.myStaxk.append(unvisited_cell)
 
     def save_as(self):
         print("to be implemented")
@@ -112,10 +125,9 @@ class MainWindow(QMainWindow):
             print("Key 'm' pressed!")
         elif gey == Qt.Key_Right:
             print("Right key pressed!, call drawFundBlock()")
-            self.func = (self.drawFundBlock, {})
+            self.func = (self.create_maze, {})
             self.mModified = True
             self.update()
-            self.nextRegion()
         elif gey == Qt.Key_5:
             print("#5 pressed, call drawNumber()")
             self.func = (self.drawNumber, {"notePoint": QPoint(100, 100)})

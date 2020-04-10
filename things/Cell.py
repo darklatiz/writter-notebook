@@ -1,5 +1,6 @@
 from PyQt5.QtCore import Qt, QLine
 from PyQt5.QtGui import QBrush
+import random
 
 
 class Cell:
@@ -8,6 +9,7 @@ class Cell:
         self.row = row
         self.col = col
         self.visited = False
+        self.neighbours = []
         self.walls = {
             "left": None,
             "right": None,
@@ -47,20 +49,26 @@ class Cell:
 
     def check_neighbours(self, the_grid):
         #we get top right bottom left
+        #random.choice("top", "right", "bottom", "left")
+
         cell_top    = the_grid[self.row][self.col - 1]
-        if not cell_top.visited:
-            return cell_top
+        if cell_top is not None and not cell_top.visited:
+            self.neighbours.append(cell_top)
 
         cell_right  = the_grid[self.row + 1][self.col]
-        if not cell_right:
-            return cell_right
+        if cell_right is not None and not cell_right.visited:
+            self.neighbours.append(cell_right)
 
         cell_bottom = the_grid[self.row][self.col + 1]
-        if not cell_bottom:
-            return cell_bottom
+        if cell_bottom is not None and not cell_bottom.visited:
+            self.neighbours.append(cell_bottom)
 
         cell_left   = the_grid[self.row - 1][self.col]
-        if not cell_left:
-            return cell_left
+        if cell_left is not None and not cell_left.visited:
+            self.neighbours.append(cell_left)
 
-
+        if len(self.neighbours) > 0:
+            index = random.randrange(4)
+            return self.neighbours[index]
+        else:
+            return None
