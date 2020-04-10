@@ -9,10 +9,10 @@ class Cell:
         self.col = col
         self.visited = False
         self.walls = {
-            "left": True,
-            "right": True,
-            "top": True,
-            "bottom": True
+            "left": None,
+            "right": None,
+            "top": None,
+            "bottom": None
         }
 
     def init_grid(self, painter, w):
@@ -39,9 +39,28 @@ class Cell:
         painter.drawLine(line_left)
         self.walls["left"] = line_left
 
+
+    def draw_mark(self, painter, w):
         if self.visited:
             painter.setBrush(QBrush(Qt.darkMagenta, Qt.SolidPattern))
             painter.drawRect(self.row * w, self.col * w, w, w)
 
-    def check_neighbours(self, top, right, bottom, left):
-        neighbours = []
+    def check_neighbours(self, the_grid):
+        #we get top right bottom left
+        cell_top    = the_grid[self.row][self.col - 1]
+        if not cell_top.visited:
+            return cell_top
+
+        cell_right  = the_grid[self.row + 1][self.col]
+        if not cell_right:
+            return cell_right
+
+        cell_bottom = the_grid[self.row][self.col + 1]
+        if not cell_bottom:
+            return cell_bottom
+
+        cell_left   = the_grid[self.row - 1][self.col]
+        if not cell_left:
+            return cell_left
+
+
