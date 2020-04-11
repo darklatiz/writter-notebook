@@ -5,7 +5,7 @@ from PyQt5.QtGui import QPainter, QBrush, QPen, QIcon, QKeySequence
 from PyQt5.QtCore import Qt, QPoint
 import math
 from things.Cell import Cell
-from collections import  deque
+from collections import deque
 import random
 import time
 import sys
@@ -14,35 +14,36 @@ class MainWindow(QMainWindow):
     '''
         Recursive BAckTacker
     '''
-    def __init__(self, width=600, height=600, top=150, left=150):
+    def __init__(self, width=500, height=500, top=150, left=150):
         QMainWindow.__init__(self)
         self.title = "PyQt5 Drawing Rectangle"
         self.top = top
         self.left = left
         self.width = width
         self.height = height
-        self.grid = []
+        self.grid = None
         self.w = 40
         self.init_window()
         self.rows = math.floor(self.width/self.w)
         self.columns = math.floor(self.width/self.w)
-        self.myStaxk = deque()
+        self.back_tracker = deque()
         self.path = []
         self.current = None
         self.func = (None, None)
         self.grid_painted = False
-        for i in range(self.rows):
-            row = []
-            for j in range(self.columns):
-                row.append(Cell(i,j))
-            self.grid.append(row)
-        self.myStaxk.append(self.grid[5][5])
+
+        self.grid = self.__create_2d_array(self.rows, self.columns)
+
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid[0])):
+                self.grid[i][j] = Cell(i, j)
+        self.back_tracker.append(self.grid[math.floor(self.rows/2) + 1][math.floor(self.columns/2)])
 
         self.func = (None, None)
         self.mModified = True
 
-        self.create_actions()
-        self.create_tool_bars()
+        # self.create_actions()
+        # self.create_tool_bars()
 
     def init_window(self):
         self.setWindowIcon(QtGui.QIcon("icon.png"))
@@ -94,6 +95,7 @@ class MainWindow(QMainWindow):
 
         self.draw_path(painter)
         self.sent_painter(painter)
+        painter.end()
 
     def sent_painter(self, qp):
         func, kwargs = self.func
@@ -103,19 +105,20 @@ class MainWindow(QMainWindow):
 
     def create_maze(self, painter):
         #while len(self.myStaxk) > 0:
-        for i in range(25):
-            if len(self.myStaxk) > 0:
-                c_cell = self.myStaxk.pop()
-                self.current = c_cell;
+        for i in range(1):
+            if len(self.back_tracker) > 0:
+                c_cell = self.back_tracker.pop()
+                self.current = c_cell
+                print("Current {0}".format(c_cell))
                 c_cell.visited = True
                 self.path.append(c_cell)
-                self.draw_path(painter)
                 c_cell.draw_mark(painter, self.w)
                 c_cell.check_neighbours(self.grid)
                 not_visited_cells = [visited_cell for visited_cell in c_cell.neighbours if not visited_cell.visited]
 
                 if len(not_visited_cells) > 0:
-                    self.myStaxk.append(self.current)
+                    print("Pushing {0}".format(self.current))
+                    self.back_tracker.append(self.current)
                     #verify the neighbours that have not been visited
                     len_n = len(not_visited_cells)
                     if len_n > 1:
@@ -125,20 +128,24 @@ class MainWindow(QMainWindow):
 
                     n_cell = not_visited_cells[random_index]
                     n_cell.visited = True
-                    self.myStaxk.append(n_cell)
+                    print("Pushing {0}".format(n_cell))
+                    self.back_tracker.append(n_cell)
 
                 ####remove walls
 
-                print("Stack: {0}".format(self.myStaxk))
+                print("Stack: {0}".format(self.back_tracker))
             else:
                 print("Finisehd.........")
-
+                for x in range(len(self.grid)):
+                    for y in range(len(self.grid[x])):
+                        c = self.grid[x][y]
+                        print('Cell ({0},{1}), visited= {2}'.format(c.row, c.col, c.visited))
 
 
     def draw_path(self, painter):
         for cell in self.path:
             painter.setBrush(QBrush(Qt.darkGreen, Qt.SolidPattern))
-            painter.drawRect(cell.row * self.w, cell.col * self.w, self.w, self.w)
+            painter.drawRect(cell.col * self.w, cell.row * self.w, self.w, self.w)
 
     def save_as(self):
         print("to be implemented")
@@ -162,6 +169,9 @@ class MainWindow(QMainWindow):
             self.func = (self.drawNumber, {"notePoint": QPoint(100, 100)})
             self.mModified = True
             self.update()
+
+    def __create_2d_array(self, rows, cols):
+        return [[0] * cols for i in range(rows)]
 
 
 if __name__ == '__main__':
