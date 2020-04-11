@@ -51,15 +51,33 @@ class Cell:
             # print("{0} walls have been created".format(self))
         else:
             # print("Walls repainted from data stored in array")
-            painter.drawLine(self.walls["top"])
-            painter.drawLine(self.walls["right"])
-            painter.drawLine(self.walls["bottom"])
-            painter.drawLine(self.walls["left"])
+            if self.walls["top"] is not None:
+                painter.drawLine(self.walls["top"])
+            else:
+                print("For {0} top wall wont be painted".format(self))
+
+            if self.walls["right"] is not None:
+                painter.drawLine(self.walls["right"])
+            else:
+                print("For {0} right wall wont be painted".format(self))
+
+            if self.walls["bottom"] is not None:
+                painter.drawLine(self.walls["bottom"])
+            else:
+                print("For {0} bottom wall wont be painted".format(self))
+
+            if self.walls["left"] is not None:
+                painter.drawLine(self.walls["left"])
+            else:
+                print("For {0} left wall wont be painted".format(self))
 
     def draw_mark(self, painter, w):
         print("Pintando MAgenta SQuare ({0},{1})".format(self.row, self.col))
         if self.visited:
+            painter.setPen(Qt.NoPen)
+            # painter.setBrush(QBrush(Qt.darkMagenta, Qt.SolidPattern))
             painter.setBrush(QBrush(Qt.darkMagenta, Qt.SolidPattern))
+            painter.setBrush(Qt.NoBrush)
             painter.drawRect(self.col * w, self.row * w, w, w)
 
     def check_neighbours(self, the_grid):
