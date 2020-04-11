@@ -53,26 +53,18 @@ class Cell:
             # print("Walls repainted from data stored in array")
             if self.walls["top"] is not None:
                 painter.drawLine(self.walls["top"])
-            else:
-                print("For {0} top wall wont be painted".format(self))
 
             if self.walls["right"] is not None:
                 painter.drawLine(self.walls["right"])
-            else:
-                print("For {0} right wall wont be painted".format(self))
 
             if self.walls["bottom"] is not None:
                 painter.drawLine(self.walls["bottom"])
-            else:
-                print("For {0} bottom wall wont be painted".format(self))
 
             if self.walls["left"] is not None:
                 painter.drawLine(self.walls["left"])
-            else:
-                print("For {0} left wall wont be painted".format(self))
 
     def draw_mark(self, painter, w):
-        print("Pintando MAgenta SQuare ({0},{1})".format(self.row, self.col))
+        # print("Pintando MAgenta SQuare ({0},{1})".format(self.row, self.col))
         if self.visited:
             painter.setPen(Qt.NoPen)
             # painter.setBrush(QBrush(Qt.darkMagenta, Qt.SolidPattern))
@@ -83,8 +75,6 @@ class Cell:
     def check_neighbours(self, the_grid):
         if not self.loaded_neighbours:
             self.get_neighbours_from_grid(the_grid)
-        else:
-            print("Neighbours have been loaded")
 
     def get_neighbours_from_grid(self, the_grid):
         try:

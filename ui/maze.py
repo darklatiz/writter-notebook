@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         Recursive BAckTacker
     '''
 
-    def __init__(self, width=450, height=450, weight=20, top=150, left=150):
+    def __init__(self, width=750, height=750, weight=5, top=150, left=150):
         QMainWindow.__init__(self)
         self.title = "PyQt5 Drawing Rectangle"
         self.top = top
@@ -119,7 +119,7 @@ class MainWindow(QMainWindow):
                 not_visited_cells = [visited_cell for visited_cell in c_cell.neighbours if not visited_cell.visited]
 
                 if len(not_visited_cells) > 0:
-                    print("Pushing {0}".format(self.current))
+                    # print("Pushing {0}".format(self.current))
                     self.back_tracker.append(self.current)
                     # verify the neighbours that have not been visited
                     len_n = len(not_visited_cells)
@@ -130,13 +130,9 @@ class MainWindow(QMainWindow):
 
                     n_cell = not_visited_cells[random_index]
                     n_cell.visited = True
-                    print("Pushing {0}".format(n_cell))
+                    # print("Pushing {0}".format(n_cell))
                     self.remove_walls(self.current, n_cell)
                     self.back_tracker.append(n_cell)
-
-                ####remove walls
-
-                print("Stack: {0}".format(self.back_tracker))
             else:
                 print("Finisehd.........")
                 for x in range(len(self.grid)):
