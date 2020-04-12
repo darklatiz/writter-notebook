@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         Recursive BAckTacker
     '''
 
-    def __init__(self, width=750, height=750, weight=5, top=150, left=150):
+    def __init__(self, width=900, height=900, weight=5, top=150, left=150):
         QMainWindow.__init__(self)
         self.title = "PyQt5 Drawing Rectangle"
         self.top = top
