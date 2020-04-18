@@ -11,12 +11,12 @@ import time
 import sys
 
 
-class MainWindow(QMainWindow):
+class MazeGenerator(QMainWindow):
     '''
         Recursive BAckTacker
     '''
 
-    def __init__(self, width=900, height=900, weight=5, top=150, left=150):
+    def __init__(self, width=900, height=900, weight=3, top=150, left=150):
         QMainWindow.__init__(self)
         self.title = "PyQt5 Drawing Rectangle"
         self.top = top
@@ -198,8 +198,6 @@ class MainWindow(QMainWindow):
 
 if __name__ == '__main__':
     import sys
-
     app = QApplication(sys.argv)
-    mainWin = MainWindow()
-    # mainWin.show()
+    maze_generator = MazeGenerator()
     sys.exit(app.exec_())
